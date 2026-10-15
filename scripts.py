@@ -1048,6 +1048,946 @@ if __name__ == '__main__':
     n = int(input())
     print(list(map(cube, fibonacci(n))))
 
+# Regex and Parsing Challenges
+
 '''
-Regex and Parsing Challenges
+Detect Floating Point Number
 '''
+import re
+
+T = int(input())
+
+for i in range(T):
+    N = input()
+
+    pattern = r'^[+-]?[0-9]*\.[0-9]+$'
+
+    if re.fullmatch(pattern, N):
+        print(True)
+    else:
+        print(False)
+
+'''
+Re.split()
+'''
+regex_pattern = r"[,.]" 
+
+import re
+print("\n".join(re.split(regex_pattern, input())))
+
+'''
+Group(), Groups() & Groupdict()
+'''
+import re
+
+s = input()
+
+risultato = re.search(r"([a-zA-Z0-9])\1", s)
+
+if risultato:
+    print(risultato.group(1))
+else:
+    print(-1)
+
+'''
+Re.findall() & Re.finditer()
+'''
+import re
+
+s = input()
+
+risultati = re.findall(r"(?<=[^AEIOUaeiou])([AEIOUaeiou]{2,})(?=[^AEIOUaeiou])", s)
+
+if risultati:
+    for risultato in risultati:
+        print(risultato)
+else:
+    print(-1)
+
+'''
+Re.start() & Re.end()
+'''
+import re
+
+s = input()
+k = input()
+
+trovato = False
+
+for risultato in re.finditer(r'(?={})'.format(re.escape(k)), s):
+    inizio = risultato.start()
+    fine = inizio + len(k) - 1
+
+    print((inizio, fine))
+    trovato = True
+
+if not trovato:
+    print((-1, -1))
+
+'''
+Regex Substitution
+'''
+import re
+
+numero_righe = int(input())
+
+for _ in range(numero_righe):
+    riga = input()
+
+    riga = re.sub(r"(?<= )&&(?= )", "and", riga)
+    riga = re.sub(r"(?<= )\|\|(?= )", "or", riga)
+
+    print(riga)
+
+'''
+Validating Roman Numerals
+'''
+regex_pattern = r"^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"
+
+import re
+print(str(bool(re.match(regex_pattern, input()))))
+
+'''
+Validating phone numbers
+'''
+import re
+
+numero_test = int(input())
+
+for _ in range(numero_test):
+    numero = input()
+
+    if re.match(r"^[789]\d{9}$", numero):
+        print("YES")
+    else:
+        print("NO")
+
+'''
+Validating and Parsing Email Addresses
+'''
+import re
+import email.utils
+
+numero_email = int(input())
+
+for _ in range(numero_email):
+    riga = input()
+
+    nome, indirizzo = email.utils.parseaddr(riga)
+
+    if re.match(r"^[A-Za-z][A-Za-z0-9._-]*@[A-Za-z]+\.[A-Za-z]{1,3}$", indirizzo):
+        print(email.utils.formataddr((nome, indirizzo)))
+
+'''
+Hex Color Code
+'''
+import re
+
+numero_righe = int(input())
+
+dentro_blocco = False
+
+for _ in range(numero_righe):
+    riga = input()
+
+    if "{" in riga:
+        dentro_blocco = True
+
+    if dentro_blocco:
+        colori = re.findall(r"#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?", riga)
+
+        for colore in colori:
+            print(colore)
+
+    if "}" in riga:
+        dentro_blocco = False
+
+'''
+HTML Parser - Part 1
+'''
+from html.parser import HTMLParser
+
+class MyHTMLParser(HTMLParser):
+
+    def handle_starttag(self, tag, attrs):
+        print("Start :", tag)
+
+        for name, value in attrs:
+            print("->", name, ">", value)
+
+    def handle_endtag(self, tag):
+        print("End   :", tag)
+
+    def handle_startendtag(self, tag, attrs):
+        print("Empty :", tag)
+
+        for name, value in attrs:
+            print("->", name, ">", value)
+
+
+N = int(input())
+
+parser = MyHTMLParser()
+
+for i in range(N):
+    line = input()
+    parser.feed(line)
+
+'''
+HTML Parser - Part 2
+'''
+from html.parser import HTMLParser
+
+class MyHTMLParser(HTMLParser):
+
+    def handle_comment(self, data):
+        if '\n' in data:
+            print(">>> Multi-line Comment")
+        else:
+            print(">>> Single-line Comment")
+        print(data)
+
+    def handle_data(self, data):
+        if data != '\n':
+            print(">>> Data")
+            print(data)
+
+
+html = ""
+for i in range(int(input())):
+    html += input().rstrip()
+    html += '\n'
+
+parser = MyHTMLParser()
+parser.feed(html)
+parser.close()
+
+'''
+Detect HTML Tags, Attributes and Attribute Values
+'''
+from html.parser import HTMLParser
+
+class MyHTMLParser(HTMLParser):
+
+    def handle_starttag(self, tag, attrs):
+        print(tag)
+
+        for name, value in attrs:
+            print("->", name, ">", value)
+
+    def handle_startendtag(self, tag, attrs):
+        print(tag)
+
+        for name, value in attrs:
+            print("->", name, ">", value)
+
+
+parser = MyHTMLParser()
+
+n = int(input())
+
+for i in range(n):
+    html = input()
+    parser.feed(html)
+
+parser.close()
+
+'''
+Validating UID
+'''
+T = int(input())
+
+for i in range(T):
+    uid = input()
+
+    maiuscole = 0
+    numeri = 0
+    valido = True
+
+    if len(uid) != 10:
+        valido = False
+
+    if len(set(uid)) != 10:
+        valido = False
+
+    for carattere in uid:
+        if carattere.isupper():
+            maiuscole += 1
+
+        if carattere.isdigit():
+            numeri += 1
+
+        if not carattere.isascii() or not carattere.isalnum():
+            valido = False
+
+    if maiuscole < 2:
+        valido = False
+
+    if numeri < 3:
+        valido = False
+
+    if valido:
+        print("Valid")
+    else:
+        print("Invalid")
+
+'''
+Validating Credit Card Numbers
+'''
+import re
+
+N = int(input())
+
+for i in range(N):
+    carta = input()
+    valido = True
+
+    pattern = r'[456][0-9]{15}|[456][0-9]{3}(-[0-9]{4}){3}'
+
+    if not re.fullmatch(pattern, carta):
+        valido = False
+
+    numeri = carta.replace("-", "")
+
+    if re.search(r'([0-9])\1{3}', numeri):
+        valido = False
+
+    if valido:
+        print("Valid")
+    else:
+        print("Invalid")
+
+'''
+Validating Postal Codes
+'''
+regex_integer_in_range = r"^[1-9][0-9]{5}$"	
+regex_alternating_repetitive_digit_pair = r"(?=(\d)\d\1)"
+
+
+import re
+P = input()
+
+print (bool(re.match(regex_integer_in_range, P)) 
+and len(re.findall(regex_alternating_repetitive_digit_pair, P)) < 2)
+
+'''
+Matrix Script
+'''
+import math
+import os
+import random
+import re
+import sys
+
+first_multiple_input = input().rstrip().split()
+
+n = int(first_multiple_input[0])
+m = int(first_multiple_input[1])
+
+matrix = []
+
+for _ in range(n):
+    matrix_item = input()
+    matrix.append(matrix_item)
+
+testo = ""
+
+for j in range(m):
+    for i in range(n):
+        testo += matrix[i][j]
+
+risultato = re.sub(r"(?<=[a-zA-Z0-9])[^a-zA-Z0-9]+(?=[a-zA-Z0-9])", " ", testo)
+
+print(risultato)
+
+# XML
+'''
+XML 1 - Find the Score
+'''
+import sys
+import xml.etree.ElementTree as etree
+
+def get_attr_number(node):
+    total = len(node.attrib)
+
+    for child in node:
+        total += get_attr_number(child)
+
+    return total
+
+
+if __name__ == '__main__':
+    sys.stdin.readline()
+    xml = sys.stdin.read()
+    tree = etree.ElementTree(etree.fromstring(xml))
+    root = tree.getroot()
+    print(get_attr_number(root))
+
+'''
+XML2 - Find the Maximum Depth
+'''
+import xml.etree.ElementTree as etree
+
+maxdepth = 0
+
+def depth(elem, level):
+    global maxdepth
+
+    level += 1
+
+    if level > maxdepth:
+        maxdepth = level
+
+    for child in elem:
+        depth(child, level)
+        
+if __name__ == '__main__':
+    n = int(input())
+    xml = ""
+    for i in range(n):
+        xml =  xml + input() + "\n"
+    tree = etree.ElementTree(etree.fromstring(xml))
+    depth(tree.getroot(), -1)
+    print(maxdepth)
+
+# Closures and Decorations 
+'''
+Standardize Mobile Number Using Decorators
+'''
+def wrapper(f):
+    def fun(l):
+        numbers = []
+
+        for number in l:
+            number = number[-10:]
+            number = "+91 " + number[:5] + " " + number[5:]
+            numbers.append(number)
+
+        f(numbers)
+
+    return fun
+
+@wrapper
+def sort_phone(l):
+    print(*sorted(l), sep='\n')
+
+if __name__ == '__main__':
+    l = [input() for _ in range(int(input()))]
+    sort_phone(l) 
+
+'''
+Decorators 2 - Name Directory
+'''
+import operator
+
+def person_lister(f):
+    def inner(people):
+        people.sort(key=lambda person: int(person[2]))
+
+        result = []
+
+        for person in people:
+            result.append(f(person))
+
+        return result
+
+    return inner
+
+@person_lister
+def name_format(person):
+    return ("Mr. " if person[3] == "M" else "Ms. ") + person[0] + " " + person[1]
+
+if __name__ == '__main__':
+    people = [input().split() for i in range(int(input()))]
+    print(*name_format(people), sep='\n')
+
+# Numpy
+'''
+Arrays
+'''
+import numpy
+
+def arrays(arr):
+    a = numpy.array(arr, dtype=float)
+    a = a[::-1]
+    return a
+
+arr = input().strip().split(' ')
+result = arrays(arr)
+print(result)
+
+'''
+Shape and Reshape
+'''
+import numpy as np
+
+
+if __name__ == '__main__':
+    
+    num = list(map(int, input().split()))
+      
+    array = np.array(num)
+
+    matrice = np.reshape(array, (3, 3))
+
+    print(matrice)
+
+'''
+Transpose and Flatten
+'''
+import numpy as np 
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+    
+    righe = []
+
+    for _ in range(N):
+        numeri = list(map(int, input().split()))
+        righe.append(numeri)
+
+    matrice = np.array(righe)
+
+    print(np.transpose(matrice))
+    print(matrice.flatten())
+
+'''
+Concatenate
+'''
+import numpy as np 
+
+if __name__ == '__main__':
+
+    N, M, P = map(int, input().split())
+
+    prima_matrice = []
+    seconda_matrice = []
+
+    for i in range(N):
+        numeri = list(map(int, input().split()))
+        prima_matrice.append(numeri)
+
+    for i in range(M):
+        numeri = list(map(int, input().split()))
+        seconda_matrice.append(numeri)
+
+    prima_matrice = np.array(prima_matrice)
+    seconda_matrice = np.array(seconda_matrice)
+
+    risultato = np.concatenate((prima_matrice, seconda_matrice), axis=0)
+
+    print(risultato)
+
+'''
+Zeros and Ones
+'''
+import numpy as np 
+
+if __name__ == '__main__':
+    dimensioni = tuple(map(int, input().split()))
+
+    zeri = np.zeros(dimensioni, dtype=int)
+    uni = np.ones(dimensioni, dtype=int)
+
+    print(zeri)
+    print(uni)
+
+'''
+Eye and Identity
+'''
+import numpy as np 
+
+if __name__ ==  '__main__':
+    
+    np.set_printoptions(legacy='1.13')
+    
+    N, M = map(int, input().split())
+
+    matrice = np.eye(N, M)
+
+    print(matrice)
+
+'''
+Array Mathematics
+'''
+import numpy as np
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+
+    righe_A = []
+    righe_B = []
+
+    for i in range(N):
+        numeri = list(map(int, input().split()))
+        righe_A.append(numeri)
+
+    for i in range(N):
+        numeri = list(map(int, input().split()))
+        righe_B.append(numeri)
+
+    matrice_A = np.array(righe_A)
+    matrice_B = np.array(righe_B)
+
+    print(matrice_A + matrice_B)
+    print(matrice_A - matrice_B)
+    print(matrice_A * matrice_B)
+    print(matrice_A // matrice_B)
+    print(matrice_A % matrice_B)
+    print(matrice_A ** matrice_B)
+
+'''
+Floor, Ceil and Rint
+'''
+import numpy as np
+
+if __name__ == '__main__':
+    np.set_printoptions(legacy='1.13')
+
+    numeri = list(map(float, input().split()))
+
+    array = np.array(numeri)
+
+    risultato_floor = np.floor(array)
+    risultato_ceil = np.ceil(array)
+    risultato_rint = np.rint(array)
+
+    print(risultato_floor)
+    print(risultato_ceil)
+    print(risultato_rint)
+
+'''
+Sum and Prod
+'''
+import numpy as np
+
+if __name__ == '__main__':
+        
+    N, M = map(int, input().split())
+
+    righe = []
+
+    for i in range(N):
+        numeri = list(map(int, input().split()))
+        righe.append(numeri)
+
+    matrice = np.array(righe)
+
+    somme = np.sum(matrice, axis=0)
+
+    risultato = np.prod(somme)
+
+    print(risultato)
+
+'''
+Min and Max
+'''
+import numpy as np
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+
+    righe = []
+
+    for i in range(N):
+        numeri = list(map(int, input().split()))
+        righe.append(numeri)
+
+    matrice = np.array(righe)
+
+    minimi = np.min(matrice, axis=1)
+
+    risultato = np.max(minimi)
+
+    print(risultato)
+
+'''
+Mean, Var, and Std
+'''
+import numpy as np 
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+
+    righe = []
+
+    for i in range(N):
+        numeri = list(map(int, input().split()))
+        righe.append(numeri)
+
+    matrice = np.array(righe)
+
+    medie = np.mean(matrice, axis=1)
+
+    varianze = np.var(matrice, axis=0)
+
+    deviazione_standard = np.std(matrice, axis=None)
+
+    print(medie)
+    print(varianze)
+    print(round(deviazione_standard, 11))
+
+'''
+Dot and Cross
+'''
+import numpy as np
+
+if __name__ == '__main__':
+    N = int(input())
+
+    righe_A = []
+    righe_B = []
+
+    for i in range(N):
+        numeri = list(map(int, input().split()))
+        righe_A.append(numeri)
+
+    for i in range(N):
+        numeri = list(map(int, input().split()))
+        righe_B.append(numeri)
+
+    matrice_A = np.array(righe_A)
+    matrice_B = np.array(righe_B)
+
+    risultato = np.dot(matrice_A, matrice_B)
+
+    print(risultato)
+
+'''
+Inner and Outer
+'''
+import numpy as np
+if __name__ == '__main__':
+    numeri_A = list(map(int, input().split()))
+    numeri_B = list(map(int, input().split()))
+
+    array_A = np.array(numeri_A)
+    array_B = np.array(numeri_B)
+
+    prodotto_interno = np.inner(array_A, array_B)
+    prodotto_esterno = np.outer(array_A, array_B)
+
+    print(prodotto_interno)
+    print(prodotto_esterno)
+
+'''
+Polynomial
+'''
+import numpy as np
+
+P = list(map(float, input().split()))
+x = float(input())
+
+result = np.polyval(P, x)
+
+print(result)
+
+'''
+Linear Algebra
+'''
+import numpy as np
+
+N = int(input())
+
+matrix = []
+
+for i in range(N):
+    row = list(map(float, input().split()))
+    matrix.append(row)
+
+A = np.array(matrix)
+
+result = np.linalg.det(A)
+
+print(round(result, 2))
+
+# Birthday Cake Candles
+import math
+import os
+import random
+import re
+import sys
+
+def birthdayCakeCandles(candles):
+    altezza_massima = max(candles)
+    conteggio = 0
+
+    for candela in candles:
+        if candela == altezza_massima:
+            conteggio += 1
+
+    return conteggio
+    
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    candles_count = int(input().strip())
+
+    candles = list(map(int, input().rstrip().split()))
+
+    result = birthdayCakeCandles(candles)
+
+    fptr.write(str(result) + '\n')
+
+    fptr.close()
+
+# Number Line Jumps
+import math
+import os
+import random
+import re
+import sys
+
+def kangaroo(x1, v1, x2, v2):
+
+    if v1 <= v2:
+        return "NO"
+
+    distanza = x2 - x1
+    differenza = v1 - v2
+
+    if distanza % differenza == 0:
+        return "YES"
+    else:
+        return "NO"
+        
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    first_multiple_input = input().rstrip().split()
+
+    x1 = int(first_multiple_input[0])
+
+    v1 = int(first_multiple_input[1])
+
+    x2 = int(first_multiple_input[2])
+
+    v2 = int(first_multiple_input[3])
+
+    result = kangaroo(x1, v1, x2, v2)
+
+    fptr.write(result + '\n')
+
+    fptr.close()
+
+# Viral Advertising
+import math
+import os
+import random
+import re
+import sys
+
+def viralAdvertising(n):
+    persone = 5
+    totale = 0
+
+    for giorno in range(n):
+        like = persone // 2
+        totale += like
+        persone = like * 3
+
+    return totale
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    n = int(input().strip())
+
+    result = viralAdvertising(n)
+
+    fptr.write(str(result) + '\n')
+
+    fptr.close()
+
+# Recursive Digit Sum
+import math
+import os
+import random
+import re
+import sys
+
+def superDigit(n, k):
+    totale = 0
+
+    for cifra in n:
+        totale += int(cifra)
+
+    totale = totale * k
+
+    while totale >= 10:
+        somma = 0
+
+        for cifra in str(totale):
+            somma += int(cifra)
+
+        totale = somma
+
+    return totale 
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    first_multiple_input = input().rstrip().split()
+
+    n = first_multiple_input[0]
+
+    k = int(first_multiple_input[1])
+
+    result = superDigit(n, k)
+
+    fptr.write(str(result) + '\n')
+
+    fptr.close()
+
+# Insertion Sort - Part 1
+import math
+import os
+import random
+import re
+import sys
+
+def insertionSort1(n, arr):
+    numero = arr[n - 1]
+    i = n - 2
+
+    while i >= 0 and arr[i] > numero:
+        arr[i + 1] = arr[i]
+        print(*arr)
+        i -= 1
+
+    arr[i + 1] = numero
+    print(*arr)
+
+if __name__ == '__main__':
+    n = int(input().strip())
+
+    arr = list(map(int, input().rstrip().split()))
+
+    insertionSort1(n, arr)
+
+# Insertion Sort - Part 2
+import math
+import os
+import random
+import re
+import sys
+
+def insertionSort2(n, arr):
+
+    for i in range(1, n):
+        numero = arr[i]
+        j = i - 1
+
+        while j >= 0 and arr[j] > numero:
+            arr[j + 1] = arr[j]
+            j -= 1
+
+        arr[j + 1] = numero
+
+        print(*arr)
+
+if __name__ == '__main__':
+    n = int(input().strip())
+
+    arr = list(map(int, input().rstrip().split()))
+
+    insertionSort2(n, arr)
